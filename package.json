@@ -1,6 +1,6 @@
 {
   "name": "media-toolkit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A powerful media processing tool built with Electron, React, and FFmpeg",
   "type": "module",
   "main": "dist-electron/main.js",
