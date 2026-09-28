@@ -27,6 +27,9 @@ mac:
         - x64
         - arm64
   icon: build/icon.icns
+  extraResources:
+    - from: node_modules/exiftool-vendored.pl
+      to: exiftool
 win:
   target:
     - target: nsis
@@ -37,6 +40,9 @@ win:
       arch:
         - x64
   icon: build/icon.ico
+  extraResources:
+    - from: node_modules/exiftool-vendored.exe
+      to: exiftool
 linux:
   target:
     - target: AppImage
@@ -48,6 +54,9 @@ linux:
         - arm64
   category: AudioVideo
   icon: build/icon.png
+  extraResources:
+    - from: node_modules/exiftool-vendored.pl
+      to: exiftool
 nsis:
   oneClick: false
   perMachine: true

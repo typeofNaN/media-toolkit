@@ -23,6 +23,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createGif: (options: GifOptions) => ipcRenderer.invoke('ffmpeg:gif', options),
   compressImage: (options: CompressImageOptions) =>
     ipcRenderer.invoke('ffmpeg:compressImage', options),
+  extractCover: (options: ExtractCoverOptions) =>
+    ipcRenderer.invoke('ffmpeg:extractCover', options),
+  replaceLivePhotoCover: (options: ReplaceLivePhotoCoverOptions) =>
+    ipcRenderer.invoke('ffmpeg:replaceLivePhotoCover', options),
+  createLivePhotoPair: (options: CreateLivePhotoOptions) =>
+    ipcRenderer.invoke('ffmpeg:createLivePhotoPair', options),
+  readMetadata: (filePath: string) => ipcRenderer.invoke('metadata:read', filePath),
+  writeMetadata: (options: WriteMetadataOptions) => ipcRenderer.invoke('metadata:write', options),
+  removeMetadata: (options: RemoveMetadataOptions) =>
+    ipcRenderer.invoke('metadata:remove', options),
 })
 
 export interface MediaInfo {
@@ -110,4 +120,38 @@ export interface CompressImageOptions {
   output: string
   quality: number
   format?: 'jpg' | 'png' | 'webp'
+}
+
+export interface ExtractCoverOptions {
+  input: string
+  output: string
+  time: number
+}
+
+export interface ReplaceLivePhotoCoverOptions {
+  photo: string
+  video: string
+  output: string
+  time: number
+}
+
+export interface CreateLivePhotoOptions {
+  input: string
+  templatePhoto: string
+  outputDir: string
+  name: string
+  startTime: number
+  duration: number
+  coverTime: number
+}
+
+export interface WriteMetadataOptions {
+  input: string
+  output: string
+  metadata: Record<string, string | number | string[] | undefined>
+}
+
+export interface RemoveMetadataOptions {
+  input: string
+  output: string
 }

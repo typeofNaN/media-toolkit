@@ -20,7 +20,7 @@ const ImageCompressor: FC = () => {
     if (paths && paths.length > 0) {
       const newFiles = paths.map((path: string) => ({
         path,
-        name: path.split('/').pop() || '',
+        name: path.split(/[\\/]/).pop() || '',
       }))
       setFiles((prev) => [...prev, ...newFiles])
     }

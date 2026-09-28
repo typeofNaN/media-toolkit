@@ -18,7 +18,7 @@ const VideoConverter: FC = () => {
     if (paths && paths.length > 0) {
       const newFiles = paths.map((path: string) => ({
         path,
-        name: path.split('/').pop() || '',
+        name: path.split(/[\\/]/).pop() || '',
         size: 0,
       }))
       setFiles((prev) => [...prev, ...newFiles])
@@ -44,7 +44,7 @@ const VideoConverter: FC = () => {
 
       for (const file of files) {
         const fileName = file.name.replace(/\.[^/.]+$/, '')
-        const outputPath = `${outputDir}/${fileName}.${outputFormat}`
+        const outputPath = `${outputDir}/${fileName}_converted.${outputFormat}`
 
         await window.electronAPI.convert({
           input: file.path,

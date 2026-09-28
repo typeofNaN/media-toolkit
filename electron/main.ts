@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog, shell, nativeImage } from 'electro
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { FFmpegService } from './services/ffmpeg'
+import { MetadataService } from './services/metadata'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -14,6 +15,7 @@ const iconPath = VITE_DEV_SERVER_URL
 
 let mainWindow: BrowserWindow | null = null
 let ffmpegService: FFmpegService | null = null
+let metadataService: MetadataService | null = null
 
 function createWindow() {
   const icon = nativeImage.createFromPath(iconPath)
@@ -57,7 +59,8 @@ app.whenReady().then(() => {
     app.dock.setIcon(icon)
   }
 
-  ffmpegService = new FFmpegService()
+  metadataService = new MetadataService()
+  ffmpegService = new FFmpegService(metadataService)
   createWindow()
 
   app.on('activate', () => {
@@ -71,6 +74,10 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+app.on('before-quit', () => {
+  void metadataService?.end()
 })
 
 ipcMain.handle('dialog:openFile', async (_, options) => {
@@ -155,4 +162,28 @@ ipcMain.handle('ffmpeg:gif', async (_, options) => {
 
 ipcMain.handle('ffmpeg:compressImage', async (_, options) => {
   return ffmpegService!.compressImage(options)
+})
+
+ipcMain.handle('ffmpeg:extractCover', async (_, options) => {
+  return ffmpegService!.extractCover(options)
+})
+
+ipcMain.handle('ffmpeg:replaceLivePhotoCover', async (_, options) => {
+  return ffmpegService!.replaceLivePhotoCover(options)
+})
+
+ipcMain.handle('ffmpeg:createLivePhotoPair', async (_, options) => {
+  return ffmpegService!.createLivePhotoPair(options)
+})
+
+ipcMain.handle('metadata:read', async (_, filePath: string) => {
+  return metadataService!.read(filePath)
+})
+
+ipcMain.handle('metadata:write', async (_, options) => {
+  return metadataService!.write(options.input, options.output, options.metadata)
+})
+
+ipcMain.handle('metadata:remove', async (_, options) => {
+  return metadataService!.remove(options.input, options.output)
 })

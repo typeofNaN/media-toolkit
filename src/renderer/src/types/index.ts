@@ -85,6 +85,55 @@ export interface CompressImageOptions {
   format?: 'jpg' | 'png' | 'webp'
 }
 
+export interface ExtractCoverOptions {
+  input: string
+  output: string
+  time: number
+}
+
+export interface EditableMetadata {
+  title?: string
+  description?: string
+  artist?: string
+  copyright?: string
+  keywords?: string[]
+  dateTimeOriginal?: string
+  latitude?: number
+  longitude?: number
+}
+
+export interface MetadataSummary extends EditableMetadata {
+  fileName: string
+  fileType: string
+  mimeType: string
+  fileSize?: string
+  width?: number
+  height?: number
+  duration?: number
+  make?: string
+  model?: string
+  lensModel?: string
+  software?: string
+  contentIdentifier?: string
+}
+
+export interface ReplaceLivePhotoCoverOptions {
+  photo: string
+  video: string
+  output: string
+  time: number
+}
+
+export interface CreateLivePhotoOptions {
+  input: string
+  templatePhoto: string
+  outputDir: string
+  name: string
+  startTime: number
+  duration: number
+  coverTime: number
+}
+
 declare global {
   interface Window {
     electronAPI: {
@@ -108,6 +157,18 @@ declare global {
       watermark: (options: WatermarkOptions) => Promise<string>
       createGif: (options: GifOptions) => Promise<string>
       compressImage: (options: CompressImageOptions) => Promise<string>
+      extractCover: (options: ExtractCoverOptions) => Promise<string>
+      replaceLivePhotoCover: (options: ReplaceLivePhotoCoverOptions) => Promise<string>
+      createLivePhotoPair: (
+        options: CreateLivePhotoOptions
+      ) => Promise<{ photo: string; video: string; identifier: string }>
+      readMetadata: (filePath: string) => Promise<MetadataSummary>
+      writeMetadata: (options: {
+        input: string
+        output: string
+        metadata: EditableMetadata
+      }) => Promise<string>
+      removeMetadata: (options: { input: string; output: string }) => Promise<string>
     }
   }
 }

@@ -13,7 +13,7 @@ const VideoTrimmer: FC = () => {
     const paths = await window.electronAPI.openFile()
     if (paths && paths.length > 0) {
       setFile(paths[0])
-      setFileName(paths[0].split('/').pop() || '')
+      setFileName(paths[0].split(/[\\/]/).pop() || '')
 
       const info = await window.electronAPI.getMediaInfo(paths[0])
       setDuration(info.duration)
@@ -97,7 +97,7 @@ const VideoTrimmer: FC = () => {
                 max={duration}
                 step="0.1"
                 value={startTime}
-                onChange={(e) => setStartTime(parseFloat(e.target.value))}
+                onChange={(e) => setStartTime(Math.min(parseFloat(e.target.value), endTime - 0.1))}
                 className="w-full"
               />
               <p className="mt-1 text-center text-gray-600">{formatTime(startTime)}</p>
@@ -106,7 +106,7 @@ const VideoTrimmer: FC = () => {
               <label className="mb-2 block text-sm text-gray-600">结束时间</label>
               <input
                 type="range"
-                min="0"
+                min={Math.min(duration, startTime + 0.1)}
                 max={duration}
                 step="0.1"
                 value={endTime}
@@ -133,9 +133,9 @@ const VideoTrimmer: FC = () => {
 
       <button
         onClick={trim}
-        disabled={!file || processing}
+        disabled={!file || processing || endTime <= startTime}
         className={`w-full rounded-lg py-3 font-semibold transition-colors ${
-          !file || processing
+          !file || processing || endTime <= startTime
             ? 'cursor-not-allowed bg-gray-300 text-gray-500'
             : 'bg-primary-500 text-white hover:bg-primary-600'
         }`}

@@ -6,8 +6,28 @@ import VideoTrimmer from './components/VideoTrimmer'
 import ImageTools from './components/ImageTools'
 import ImageCompressor from './components/ImageCompressor'
 import GifMaker from './components/GifMaker'
+import MetadataEditor from './components/MetadataEditor'
+import LivePhotoTools from './components/LivePhotoTools'
+import MediaInspector from './components/MediaInspector'
+import VideoCompressor from './components/VideoCompressor'
+import FrameExtractor from './components/FrameExtractor'
+import VideoMerger from './components/VideoMerger'
+import WatermarkTool from './components/WatermarkTool'
 
-export type ToolType = 'converter' | 'audio' | 'trimmer' | 'image' | 'compressor' | 'gif'
+export type ToolType =
+  | 'converter'
+  | 'audio'
+  | 'trimmer'
+  | 'image'
+  | 'compressor'
+  | 'gif'
+  | 'metadata'
+  | 'livePhoto'
+  | 'inspector'
+  | 'videoCompressor'
+  | 'frames'
+  | 'merger'
+  | 'watermark'
 
 function App() {
   const [currentTool, setCurrentTool] = useState<ToolType>('converter')
@@ -26,6 +46,20 @@ function App() {
         return <ImageCompressor />
       case 'gif':
         return <GifMaker />
+      case 'metadata':
+        return <MetadataEditor />
+      case 'livePhoto':
+        return <LivePhotoTools />
+      case 'inspector':
+        return <MediaInspector />
+      case 'videoCompressor':
+        return <VideoCompressor />
+      case 'frames':
+        return <FrameExtractor />
+      case 'merger':
+        return <VideoMerger />
+      case 'watermark':
+        return <WatermarkTool />
       default:
         return <VideoConverter />
     }

@@ -17,7 +17,7 @@ const AudioExtractor: FC = () => {
     if (paths && paths.length > 0) {
       const newFiles = paths.map((path: string) => ({
         path,
-        name: path.split('/').pop() || '',
+        name: path.split(/[\\/]/).pop() || '',
       }))
       setFiles((prev) => [...prev, ...newFiles])
     }
@@ -42,7 +42,7 @@ const AudioExtractor: FC = () => {
 
       for (const file of files) {
         const fileName = file.name.replace(/\.[^/.]+$/, '')
-        const outputPath = `${outputDir}/${fileName}.${outputFormat}`
+        const outputPath = `${outputDir}/${fileName}_audio.${outputFormat}`
 
         await window.electronAPI.extractAudio({
           input: file.path,

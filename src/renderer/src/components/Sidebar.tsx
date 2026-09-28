@@ -7,12 +7,19 @@ interface SidebarProps {
 }
 
 const tools = [
+  { id: 'inspector' as ToolType, name: '媒体检查器', icon: '🔍' },
   { id: 'converter' as ToolType, name: '视频转换', icon: '🎬' },
+  { id: 'videoCompressor' as ToolType, name: '视频压缩', icon: '🗜️' },
   { id: 'audio' as ToolType, name: '音频提取', icon: '🎵' },
   { id: 'trimmer' as ToolType, name: '视频裁剪', icon: '✂️' },
+  { id: 'merger' as ToolType, name: '视频合并', icon: '🧩' },
+  { id: 'frames' as ToolType, name: '封面与抽帧', icon: '🎞️' },
+  { id: 'watermark' as ToolType, name: '添加水印', icon: '💧' },
   { id: 'image' as ToolType, name: '图片工具', icon: '🖼️' },
   { id: 'compressor' as ToolType, name: '图片压缩', icon: '📦' },
   { id: 'gif' as ToolType, name: 'GIF 制作', icon: '🎞️' },
+  { id: 'livePhoto' as ToolType, name: '实况照片', icon: '📸' },
+  { id: 'metadata' as ToolType, name: '元信息编辑', icon: '🏷️' },
 ]
 
 const Sidebar: FC<SidebarProps> = ({ currentTool, onToolChange }) => {
@@ -22,7 +29,7 @@ const Sidebar: FC<SidebarProps> = ({ currentTool, onToolChange }) => {
         <h1 className="text-xl font-bold text-gray-800">Media Toolkit</h1>
         <p className="mt-1 text-sm text-gray-500">多媒体处理工具</p>
       </div>
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 overflow-y-auto p-4">
         <ul className="space-y-2">
           {tools.map((tool) => (
             <li key={tool.id}>

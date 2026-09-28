@@ -15,11 +15,13 @@ const GifMaker: FC = () => {
     const paths = await window.electronAPI.openFile()
     if (paths && paths.length > 0) {
       setFile(paths[0])
-      setFileName(paths[0].split('/').pop() || '')
+      setFileName(paths[0].split(/[\\/]/).pop() || '')
 
       const info = await window.electronAPI.getMediaInfo(paths[0])
       setVideoDuration(info.duration)
       setWidth(Math.min(info.width, 480))
+      setStartTime(0)
+      setDuration(Math.max(0.1, Math.min(5, info.duration)))
     }
   }, [])
 
@@ -110,11 +112,11 @@ const GifMaker: FC = () => {
               <label className="mb-2 block text-sm text-gray-600">时长: {duration} 秒</label>
               <input
                 type="range"
-                min="1"
-                max={Math.min(30, videoDuration)}
-                step="1"
+                min="0.1"
+                max={Math.max(0.1, Math.min(30, videoDuration))}
+                step="0.1"
                 value={duration}
-                onChange={(e) => setDuration(parseInt(e.target.value))}
+                onChange={(e) => setDuration(parseFloat(e.target.value))}
                 className="w-full"
               />
             </div>

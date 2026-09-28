@@ -10,7 +10,8 @@ const ImageTools: FC = () => {
   const [operation, setOperation] = useState<'resize' | 'convert'>('resize')
   const [width, setWidth] = useState(800)
   const [height, setHeight] = useState(600)
-  const [outputFormat, setOutputFormat] = useState('png')
+  const [outputFormat, setOutputFormat] = useState<'jpg' | 'png' | 'webp'>('png')
+  const [keepAspectRatio, setKeepAspectRatio] = useState(true)
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState('')
 
@@ -21,7 +22,7 @@ const ImageTools: FC = () => {
     if (paths && paths.length > 0) {
       const newFiles = paths.map((path: string) => ({
         path,
-        name: path.split('/').pop() || '',
+        name: path.split(/[\\/]/).pop() || '',
       }))
       setFiles((prev) => [...prev, ...newFiles])
     }
@@ -46,7 +47,8 @@ const ImageTools: FC = () => {
 
       for (const file of files) {
         const fileName = file.name.replace(/\.[^/.]+$/, '')
-        const outputPath = `${outputDir}/${fileName}.${outputFormat}`
+        const suffix = operation === 'resize' ? '_resized' : '_converted'
+        const outputPath = `${outputDir}/${fileName}${suffix}.${outputFormat}`
 
         if (operation === 'resize') {
           await window.electronAPI.resize({
@@ -54,13 +56,14 @@ const ImageTools: FC = () => {
             output: outputPath,
             width,
             height,
-            keepAspectRatio: true,
+            keepAspectRatio,
           })
         } else {
-          await window.electronAPI.convert({
+          await window.electronAPI.compressImage({
             input: file.path,
             output: outputPath,
             format: outputFormat,
+            quality: 100,
           })
         }
       }
@@ -71,7 +74,7 @@ const ImageTools: FC = () => {
     } finally {
       setProcessing(false)
     }
-  }, [files, operation, width, height, outputFormat])
+  }, [files, operation, width, height, outputFormat, keepAspectRatio])
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -157,6 +160,14 @@ const ImageTools: FC = () => {
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-primary-500"
               />
             </div>
+            <label className="col-span-2 flex items-center gap-2 text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={keepAspectRatio}
+                onChange={(event) => setKeepAspectRatio(event.target.checked)}
+              />
+              保持宽高比（启用时以宽度为准）
+            </label>
           </div>
         )}
 
@@ -164,7 +175,7 @@ const ImageTools: FC = () => {
           <label className="mb-2 block text-sm text-gray-600">输出格式</label>
           <select
             value={outputFormat}
-            onChange={(e) => setOutputFormat(e.target.value)}
+            onChange={(e) => setOutputFormat(e.target.value as 'jpg' | 'png' | 'webp')}
             className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-primary-500"
           >
             <option value="png">PNG</option>
